@@ -42,5 +42,16 @@ services:
       - "80:80"
     # Si se usa proxy en nginx.conf hacia backend no hace falta exponer 8080 públicamente
 
+  ai:
+    build: ./SaavedraFotografo/server
+    container_name: sf_ai
+    environment:
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      PORT: 5050
+    expose:
+      - "5050"
+    depends_on:
+      - backend
+
 volumes:
   db_data:
