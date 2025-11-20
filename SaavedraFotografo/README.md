@@ -1,39 +1,3 @@
-# Ejecución con Docker
-
-Para levantar toda la aplicación (MySQL, backend Spring Boot y frontend Angular) usa Docker Compose:
-
-```powershell
-docker compose build
-docker compose up -d
-```
-
-Servicios expuestos:
-- Frontend: http://localhost (puerto 80)
-- Backend API: http://localhost:8080
-- MySQL: puerto 3306 (root/1234)
-
-Para ver logs:
-```powershell
-docker compose logs -f backend
-docker compose logs -f frontend
-docker compose logs -f mysql
-```
-
-Para detener y eliminar contenedores:
-```powershell
-docker compose down
-```
-
-Si deseas cambiar credenciales de base de datos, ajusta variables en `docker-compose.yml` y las de conexión sobreescriben las de `application.properties`.
-
-Para reconstruir después de cambios en código:
-```powershell
-docker compose build --no-cache backend frontend
-docker compose up -d
-```
-
-Optimización opcional: activar proxy desde Nginx al backend (descomenta bloque `/api/` en `nginx.conf` y luego apunta las llamadas de Angular a rutas relativas `/api/auth/...`).
-
 # SaavedraFotografo
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.8.
