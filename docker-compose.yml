@@ -1,0 +1,46 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sf_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: saavedrafotografo
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend-SaavedraFotografo
+    container_name: sf_backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/saavedrafotografo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      # Ampliar orígenes permitidos (se cambia en SecurityConfig si se desea proxy)
+      # JAVA_OPTS: -Xms256m -Xmx512m
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./SaavedraFotografo
+    container_name: sf_frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    # Si se usa proxy en nginx.conf hacia backend no hace falta exponer 8080 públicamente
+
+volumes:
+  db_data:
